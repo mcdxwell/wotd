@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"log"
 	"os"
 )
 
@@ -15,16 +16,17 @@ type word struct {
 }
 
 func getWord() (wotd []word) {
+
 	wordData, err := os.ReadFile("./wotd.json")
 
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	err = json.Unmarshal(wordData, &wotd)
 
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	return wotd
@@ -34,12 +36,12 @@ func saveWord(w []word) {
 	wordData, err := json.Marshal(w)
 
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	err = os.WriteFile("./wotd.json", wordData, 0644)
 
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 }

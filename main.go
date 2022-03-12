@@ -14,24 +14,21 @@ import (
 
 const wotdURL = "https://www.merriam-webster.com/word-of-the-day/"
 
-// Everything needs to refactored aside from a couple of functions
 // Use cases for wotd
-// 1. Getting the word of the day
-// 2. Generating a random word of the day
+// 1. Get the word of the day
+// 2. Generating a random (previous) word of the day
 // 3. Generating a random word of the day by providing a date (optional - not implemented)
 
 // Events that must take place to present a word:
-// 1. The user picks between 3 commands - `get` the wotd, get `random` word, random word given a `date` (3rd is optional).
+// 1. The user picks between 3 commands - wotd `get`,  wotd `random``
 // 2. The program then generates the current date.
 // 3. If the current date or the random date are present in the json file => return word info.
 // 4. Else, fetch the word given the date and its information.
-// 5. Save the word and its information to wotd.json
+// 5. Save the word and its information to wotd.json.
 
-// TODO: Generate the current date in the wotd function
-// If the date already exists in the json file, fetch word info from the json file. Else, fetch from the webpage.
 func main() {
 
-	getCmd := flag.NewFlagSet("get", flag.ExitOnError) //today
+	getCmd := flag.NewFlagSet("get", flag.ExitOnError)
 	rndCmd := flag.NewFlagSet("random", flag.ExitOnError)
 
 	if len(os.Args) < 2 {
@@ -65,7 +62,7 @@ func HandleRnd(rndCmd *flag.FlagSet) {
 
 // Creates a random date between 2006-10-10 to the current date
 // When you pass a negative integer to AddDate(), you get the date for (x) days ago.
-// FYI: This technique could be used to fetch a date for (y) months or years ago.
+// FYI: This technique could be used to fetch a date for (x) months or (x) years ago.
 func getRandomDate() string {
 
 	start := time.Date(2006, 10, 10, 0, 0, 0, 0, time.UTC)
@@ -91,9 +88,7 @@ func checkDate(d string) string {
 		if word.Date == d {
 			fmt.Println(word.Word)
 			return word.Word // return the word - or the word struct with all the word information
-			// I have yet to decide whether or not I want to return just the word or word w/ information
 		}
-
 	}
 	w := formatter(getWordTitle(getDateURL(d)))
 
@@ -110,7 +105,7 @@ func formatter(title string) string {
 	return res
 }
 
-// params:
+// Params:
 // date, word, class, meaning, defintion, and example
 func saveInfo(d, w string) {
 
@@ -135,36 +130,36 @@ func getDateURL(date string) string {
 	return url.String()
 }
 
+// Credit for this function: https://zetcode.com/golang/net-html/
+// Jan Bodnar - https://twitter.com/janbodnar
 func getWordTitle(url string) string {
 
 	res, err := http.Get(url)
 
 	if err != nil {
-		fmt.Println("Failed to fetch data")
+		fmt.Println("Failed to get word title")
 	}
 
 	defer res.Body.Close()
 
-	tkn := html.NewTokenizer(res.Body)
+	token := html.NewTokenizer(res.Body)
 
 	var isTitle bool
 
 	for {
 
-		tt := tkn.Next()
-
+		tt := token.Next()
 		switch {
 		case tt == html.ErrorToken:
 			return "error"
 		case tt == html.StartTagToken:
 
-			t := tkn.Token()
-
+			t := token.Token()
 			isTitle = t.Data == "title"
 
 		case tt == html.TextToken:
 
-			t := tkn.Token()
+			t := token.Token()
 
 			if isTitle {
 				isTitle = false
