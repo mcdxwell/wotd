@@ -50,14 +50,15 @@ func HandleGet(getCmd *flag.FlagSet) {
 
 	getCmd.Parse(os.Args[2:])
 	today := time.Now().UTC().Format("2006-01-02")
-	checkDate(today)
+	checkDate(today, wotdURL)
 }
 
 func HandleRnd(rndCmd *flag.FlagSet) {
 
 	rndCmd.Parse(os.Args[2:])
 	date := getRandomDate()
-	checkDate(date)
+	rndURL := getDateURL(date)
+	checkDate(date, rndURL)
 }
 
 // Creates a random date between 2006-10-10 to the current date
@@ -80,7 +81,7 @@ func getRandomDate() string {
 // This eliminates the possibility of having more than 1 word
 // per day, but it does not eliminate reused words.
 // FYI: Merriam-Webster tends to reuse words.
-func checkDate(d string) string {
+func checkDate(d, url string) string {
 
 	words := getWord()
 
@@ -90,7 +91,8 @@ func checkDate(d string) string {
 			return word.Word // return the word - or the word struct with all the word information
 		}
 	}
-	w := formatter(getWordTitle(getDateURL(d)))
+
+	w := formatter(getWordTitle(url))
 
 	fmt.Println(w)
 	saveInfo(d, w)
@@ -147,7 +149,6 @@ func getWordTitle(url string) string {
 	var isTitle bool
 
 	for {
-
 		tt := token.Next()
 		switch {
 		case tt == html.ErrorToken:
