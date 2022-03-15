@@ -1,48 +1,27 @@
-# **Go CLI: Word of the Day - Design Document**
+# **Word of the Day (WOTD) on the Command Line**
 
-<!--- Create a table of functional and non-functional requirements -->
-<!--- Provide descriptions -->
-<!--- Resource list-->
-## **Functional Requirements:**
+## Installation
 
-- Fetch the word of the day
-- Fetch an exact word of the day since 10-10-2006
-- Generate a random word of the day
-
-## **Non-functional Requirements:**
-
-- Fetch definition/entry
-- Provide a clickable URL for the wotd
-- Cache fetched words into a JSON file
-- Speed
-- Color
+1. Install Go 1.17+
+2. $ ```git clone https://github.com/mcdxwell/wotd.git```
+3. $ ```cd wotd```
+4. $ ```go build```
 
 
-## **Diagram:**
+## Commands
 
-![](wotd-diagram.png)
-## **Dictionary of Choice:**
-- [**Merriam-Webster**](https://www.merriam-webster.com)
+1. $ ```wotd get```
+> Output: $ Cryptography
+2. $ ```wotd random```
+> Ouput: $ Itinerant
+
+## Known Issues
+
+- Merriam-Webster updates the word of the day around 9:00 AM UTC, so if you do `wotd get` before the wotd is updated, then the wotd will be repeated inside the json file. 
+- Quick fix: manually change the date of the word of the day in the wotd.json file.
 
 
-## **Notes**:
+## Notes
 
-- With the following URL: https://www.merriam-webster.com/word-of-the-day/
-
-- One can append `ANY` date from 2006-10-10 `(YYYY-MM-DD)` to now.
-
-
-*Example:*
-
-```
-https://www.merriam-webster.com/word-of-the-day/2006-10-10
-
-...
-Word of the Day : October 10, 2006
-Recusant
-adjective | REK-yuh-zunt
-What It Means
-: refusing to submit to authority
-...
-```
-
+- Update the path in words.go to save words to the wotd.json in a desired location.
+- This allows for all words to be saved in one place when `wotd get` or `wotd random` is used globally.
