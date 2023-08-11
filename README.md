@@ -2,17 +2,20 @@
 
 ## Installation
 
-1. Install Go 1.21+
-1. $ ```git clone https://github.com/mcdxwell/wotd.git```
-1. $ ```cd wotd```
-1. $ ```go build .``` or ```go install .```
+Install Go 1.21+
+
+`$ git clone https://github.com/mcdxwell/wotd.git`
+
+`$ cd wotd`
+
+`$ go build .` or `$ go install .`
 
 ## Commands
 
-1. $ ```wotd```
-> Output: $ Cryptography
-1. $ ```wotd random```
-> Ouput: $ Itinerant
+`wotd`
+
+`wotd random`
+
 
 ## Known Issues
 
