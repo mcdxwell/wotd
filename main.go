@@ -14,41 +14,28 @@ import (
 
 const wotdURL = "https://www.merriam-webster.com/word-of-the-day/"
 
-// Use cases for wotd
-// 1. Get the word of the day
-// 2. Generating a random (previous) word of the day
-// 3. Generating a random word of the day by providing a date (optional - not implemented)
-
-// Events that must take place to present a word:
-// 1. The user picks between 3 commands - wotd `get`,  wotd `random``
-// 2. The program then generates the current date.
-// 3. If the current date or the random date are present in the json file => return word info.
-// 4. Else, fetch the word given the date and its information.
-// 5. Save the word and its information to wotd.json.
-
 func main() {
 
-	getCmd := flag.NewFlagSet("get", flag.ExitOnError)
 	rndCmd := flag.NewFlagSet("random", flag.ExitOnError)
 
-	if len(os.Args) < 2 {
-		fmt.Println("expected `get` subcommand")
-		os.Exit(1)
+	if len(os.Args) == 1 {
+		HandleWotd()
 	}
 
-	switch os.Args[1] {
-	case "get":
-		HandleGet(getCmd)
-	case "random":
-		HandleRnd(rndCmd)
-	default:
-	}
+	if len(os.Args) == 2 {
 
+		switch os.Args[1] {
+		case "random":
+			HandleRnd(rndCmd)
+		default:
+			fmt.Println("expected `random` subcommand")
+			os.Exit(1)
+		}
+	}
 }
 
-func HandleGet(getCmd *flag.FlagSet) {
+func HandleWotd() {
 
-	getCmd.Parse(os.Args[2:])
 	today := time.Now().UTC().Format("2006-01-02")
 	checkDate(today, wotdURL)
 }
@@ -70,7 +57,7 @@ func getRandomDate() string {
 	today := time.Now().UTC()
 	diff := today.Sub(start)
 	d := int(diff.Hours() / 24)
-	rand.Seed(time.Now().UnixNano())
+	// rand.New(rand.NewSource(time.Now().UnixNano()))
 	randomDay := rand.Intn(d - 0)
 	randomDate := today.AddDate(0, 0, -randomDay).Format("2006-01-02")
 
